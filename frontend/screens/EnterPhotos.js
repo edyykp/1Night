@@ -43,10 +43,15 @@ export default function EnterPhotos({ navigation }) {
       </View>
       <View style={{ flex: 0.8, paddingBottom: 50 }}>
         <Text style={styles.title}>Upload your first photo:</Text>
-        <TouchableOpacity style={styles.pickPhoto} onPress={() => pickPhoto()}>
-          {image == null ? (
+        {image == null ? (
+          <TouchableOpacity
+            style={styles.pickPhoto}
+            onPress={() => pickPhoto()}
+          >
             <Icon name="plus" color="#ababab" size={60} />
-          ) : (
+          </TouchableOpacity>
+        ) : (
+          <>
             <Image
               source={{ uri: image }}
               style={{
@@ -55,8 +60,27 @@ export default function EnterPhotos({ navigation }) {
               }}
               resizeMode="cover"
             />
-          )}
-        </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setImage(null)}
+              style={{ backgroundColor: "grey" }}
+            >
+              <Icon
+                name="trash"
+                size={30}
+                color="lightgrey"
+                style={{
+                  width: 50,
+                  height: 50,
+                  position: "absolute",
+                  marginTop: -40,
+                  marginLeft: 5,
+                  opacity: 0.5,
+                }}
+              />
+            </TouchableOpacity>
+          </>
+        )}
+
         <TouchableOpacity
           style={styles.buttonCreate}
           onPress={() => navigation.navigate("EnterPhotos")}
@@ -100,6 +124,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: "#747483",
     fontWeight: "bold",
+    paddingBottom: 20,
   },
   pickPhoto: {
     backgroundColor: "grey",
