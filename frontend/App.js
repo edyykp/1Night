@@ -10,6 +10,8 @@ import EnterDOB from "./screens/EnterDOB";
 import EnterGender from "./screens/EnterGender";
 import EnterInterest from "./screens/EnterInterest";
 import EnterPhotos from "./screens/EnterPhotos";
+import Explore from "./screens/Explore";
+import TabNavig from "./TabNavig";
 
 const Stack = createStackNavigator();
 
@@ -30,6 +32,8 @@ export default class App extends React.Component {
           <Stack.Screen name="EnterGender" component={EnterGender} />
           <Stack.Screen name="EnterInterest" component={EnterInterest} />
           <Stack.Screen name="EnterPhotos" component={EnterPhotos} />
+          <Stack.Screen name="Explore" component={Explore} />
+          <Stack.Screen name="TabNavig" component={TabNavig} />
         </Stack.Navigator>
       </NavigationContainer>
     );

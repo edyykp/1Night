@@ -100,9 +100,7 @@ const styles = StyleSheet.create({
   },
   textGroup: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
     marginTop: 50,
-    paddingLeft: 30,
-    paddingRight: 30,
   },
 });

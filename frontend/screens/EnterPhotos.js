@@ -83,7 +83,12 @@ export default function EnterPhotos({ navigation }) {
 
         <TouchableOpacity
           style={styles.buttonCreate}
-          onPress={() => navigation.navigate("EnterPhotos")}
+          onPress={() =>
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "TabNavig" }],
+            })
+          }
         >
           <Text style={styles.text}>FINISH</Text>
         </TouchableOpacity>
