@@ -138,6 +138,27 @@ export default class Explore extends Component {
                 },
               ]}
             >
+              <View
+                style={{
+                  height: "18%",
+                  backgroundColor: "black",
+                  justifyContent: "flex-end",
+                  padding: 20,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "gray",
+                    fontSize: 30,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {user.name}, {user.age}
+                </Text>
+                <Text style={{ color: "gray", fontSize: 20 }}>
+                  {user.distance} km away
+                </Text>
+              </View>
               <Animated.View
                 style={{
                   opacity: this.likeOpacity,
@@ -205,12 +226,33 @@ export default class Explore extends Component {
               style={{
                 opacity: this.nextCardOpacity,
                 transform: [{ scale: this.nextCardScale }],
-                height: SCREEN_HEIGHT - 120,
+                height: "100%",
                 width: SCREEN_WIDTH,
                 padding: 10,
                 position: "absolute",
               }}
             >
+              <View
+                style={{
+                  height: "18%",
+                  backgroundColor: "black",
+                  justifyContent: "flex-end",
+                  padding: 20,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "gray",
+                    fontSize: 30,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {user.name}, {user.age}
+                </Text>
+                <Text style={{ color: "gray", fontSize: 20 }}>
+                  {user.distance} km away
+                </Text>
+              </View>
               <Image
                 style={{
                   flex: 1,
@@ -230,9 +272,9 @@ export default class Explore extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={{ height: 70 }} />
         <View style={{ flex: 1 }}>{this.renderUsers()}</View>
-        <View style={{ height: 60 }} />
+
+        <View style={{ height: "7%" }} />
       </View>
     );
   }
@@ -241,9 +283,6 @@ export default class Explore extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "gray",
-  },
-  card: {
-    flex: 0.9,
+    backgroundColor: "black",
   },
 });

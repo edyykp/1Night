@@ -24,7 +24,12 @@ export default function App() {
         screenOptions={{
           headerShown: false,
         }}
-        barStyle={{ backgroundColor: "black" }}
+        barStyle={{
+          backgroundColor: "black",
+          borderColor: "gray",
+          borderTopWidth: 1,
+          borderTopColor: "grey",
+        }}
         activeColor="#ff0048"
       >
         <Tab.Screen
