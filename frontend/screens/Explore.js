@@ -8,8 +8,8 @@ import {
   Dimensions,
   Animated,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome5";
-
+//import Icon from "react-native-vector-icons/FontAwesome5";
+import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const users = [
@@ -282,9 +282,9 @@ export default class Explore extends Component {
             alignItems: "center",
           }}
         >
-          <Icon name="heart-broken" size={30} color="red" />
-          <Icon name="grin-hearts" size={30} color="#ff0048" />
-          <Icon name="heart" size={30} color="green" />
+          <Ionicons name="heart-dislike" size={32} color="red" />
+          <FontAwesome5 name="grin-hearts" size={32} color="#ff0048" />
+          <Ionicons name="heart" size={32} color="green" />
         </View>
       </View>
     );
