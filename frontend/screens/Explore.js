@@ -8,6 +8,7 @@ import {
   Dimensions,
   Animated,
 } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome5";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -164,7 +165,7 @@ export default class Explore extends Component {
                   opacity: this.likeOpacity,
                   transform: [{ rotate: "-30deg" }],
                   position: "absolute",
-                  top: 50,
+                  top: "23%",
                   left: 40,
                   zIndex: 1000,
                 }}
@@ -188,7 +189,7 @@ export default class Explore extends Component {
                   opacity: this.nopeOpacity,
                   transform: [{ rotate: "30deg" }],
                   position: "absolute",
-                  top: 50,
+                  top: "23%",
                   right: 40,
                   zIndex: 1000,
                 }}
@@ -273,8 +274,18 @@ export default class Explore extends Component {
     return (
       <View style={styles.container}>
         <View style={{ flex: 1 }}>{this.renderUsers()}</View>
-
-        <View style={{ height: "7%" }} />
+        <View
+          style={{
+            height: "7%",
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+          }}
+        >
+          <Icon name="heart-broken" size={30} color="red" />
+          <Icon name="grin-hearts" size={30} color="#ff0048" />
+          <Icon name="heart" size={30} color="green" />
+        </View>
       </View>
     );
   }

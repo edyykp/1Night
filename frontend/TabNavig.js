@@ -2,7 +2,7 @@ import React from "react";
 import { Text, Dimensions, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/FontAwesome5";
 import Svg, { Path } from "react-native-svg";
 import Explore from "./screens/Explore";
 import Profile from "./screens/Profile";
@@ -83,7 +83,7 @@ export default function App() {
           options={{
             tabBarIcon: (props) => (
               <Icon
-                name="user"
+                name="user-circle"
                 size={20}
                 color={props.focused ? "#ff0048" : "grey"}
               />
