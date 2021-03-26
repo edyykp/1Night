@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, createRef } from "react";
 import {
   Text,
   View,
@@ -47,6 +47,7 @@ const users = [
 export default class Explore extends Component {
   constructor() {
     super();
+    this.currentCard = createRef();
     this.position = new Animated.ValueXY();
     this.state = {
       currentIndex: 0,
@@ -118,6 +119,39 @@ export default class Explore extends Component {
       },
     });
   }
+
+  swipeCardYes = () => {
+    Animated.spring(this.position, {
+      toValue: { x: SCREEN_WIDTH + 100, y: 0 },
+      useNativeDriver: true,
+    }).start(() => {
+      this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
+        this.position.setValue({ x: 0, y: 0 });
+      });
+    });
+  };
+
+  swipeCardNo = () => {
+    Animated.spring(this.position, {
+      toValue: { x: -SCREEN_WIDTH - 100, y: 0 },
+      useNativeDriver: true,
+    }).start(() => {
+      this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
+        this.position.setValue({ x: 0, y: 0 });
+      });
+    });
+  };
+
+  swipeCardSuperlike = () => {
+    Animated.spring(this.position, {
+      toValue: { x: 0, y: -SCREEN_HEIGHT },
+      useNativeDriver: true,
+    }).start(() => {
+      this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
+        this.position.setValue({ x: 0, y: 0 });
+      });
+    });
+  };
 
   renderUsers = () => {
     return users
@@ -218,6 +252,33 @@ export default class Explore extends Component {
                 }}
                 source={user.image}
               />
+              <View
+                style={{
+                  height: "7%",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                }}
+              >
+                <Ionicons
+                  name="heart-dislike"
+                  size={32}
+                  color="red"
+                  onPress={() => this.swipeCardNo()}
+                />
+                <FontAwesome5
+                  name="grin-hearts"
+                  size={32}
+                  color="#ff0048"
+                  onPress={() => this.swipeCardSuperlike()}
+                />
+                <Ionicons
+                  name="heart"
+                  size={32}
+                  color="green"
+                  onPress={() => this.swipeCardYes()}
+                />
+              </View>
             </Animated.View>
           );
         } else {
@@ -264,6 +325,18 @@ export default class Explore extends Component {
                 }}
                 source={user.image}
               />
+              <View
+                style={{
+                  height: "7%",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                }}
+              >
+                <Ionicons name="heart-dislike" size={32} color="red" />
+                <FontAwesome5 name="grin-hearts" size={32} color="#ff0048" />
+                <Ionicons name="heart" size={32} color="green" />
+              </View>
             </Animated.View>
           );
         }
@@ -274,18 +347,6 @@ export default class Explore extends Component {
     return (
       <View style={styles.container}>
         <View style={{ flex: 1 }}>{this.renderUsers()}</View>
-        <View
-          style={{
-            height: "7%",
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-          }}
-        >
-          <Ionicons name="heart-dislike" size={32} color="red" />
-          <FontAwesome5 name="grin-hearts" size={32} color="#ff0048" />
-          <Ionicons name="heart" size={32} color="green" />
-        </View>
       </View>
     );
   }
