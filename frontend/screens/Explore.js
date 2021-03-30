@@ -1,4 +1,4 @@
-import React, { Component, useState, createRef } from "react";
+import React, { Component, createRef } from "react";
 import {
   Text,
   View,
@@ -8,8 +8,8 @@ import {
   Dimensions,
   Animated,
 } from "react-native";
-//import Icon from "react-native-vector-icons/FontAwesome5";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const users = [
@@ -27,7 +27,7 @@ const users = [
   },
   {
     name: "Minodora",
-    age: 18,
+    age: 19,
     distance: 2,
     image: require("../assets/3.png"),
   },
@@ -51,6 +51,7 @@ export default class Explore extends Component {
     this.position = new Animated.ValueXY();
     this.state = {
       currentIndex: 0,
+      fadeAnimation: new Animated.Value(0),
     };
     this.rotate = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
@@ -75,13 +76,24 @@ export default class Explore extends Component {
       outputRange: [1, 0, 0],
       extrapolate: "clamp",
     });
-    this.nextCardOpacity = this.position.x.interpolate({
-      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+    this.superlikeOpacity = this.position.y.interpolate({
+      inputRange: [-SCREEN_HEIGHT / 2, 0, SCREEN_HEIGHT / 2],
+      outputRange: [1, 0, 0],
+      extrapolate: "clamp",
+    });
+    this.nextCardOpacity = Animated.add(
+      this.position.x,
+      this.position.y
+    ).interpolate({
+      inputRange: [-SCREEN_WIDTH, 0, SCREEN_WIDTH],
       outputRange: [1, 0, 1],
       extrapolate: "clamp",
     });
-    this.nextCardScale = this.position.x.interpolate({
-      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+    this.nextCardScale = Animated.add(
+      this.position.x,
+      this.position.y
+    ).interpolate({
+      inputRange: [-SCREEN_WIDTH, 0, SCREEN_WIDTH],
       outputRange: [1, 0.8, 1],
       extrapolate: "clamp",
     });
@@ -96,6 +108,7 @@ export default class Explore extends Component {
             toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
             useNativeDriver: true,
           }).start(() => {
+            delete users[this.state.currentIndex];
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
               this.position.setValue({ x: 0, y: 0 });
             });
@@ -105,6 +118,17 @@ export default class Explore extends Component {
             toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
             useNativeDriver: true,
           }).start(() => {
+            delete users[this.state.currentIndex];
+            this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
+              this.position.setValue({ x: 0, y: 0 });
+            });
+          });
+        } else if (gestureState.dy < -100) {
+          Animated.spring(this.position, {
+            toValue: { x: gestureState.dx, y: -SCREEN_HEIGHT },
+            useNativeDriver: true,
+          }).start(() => {
+            delete users[this.state.currentIndex];
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
               this.position.setValue({ x: 0, y: 0 });
             });
@@ -125,6 +149,7 @@ export default class Explore extends Component {
       toValue: { x: SCREEN_WIDTH + 100, y: 0 },
       useNativeDriver: true,
     }).start(() => {
+      delete users[this.state.currentIndex];
       this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
         this.position.setValue({ x: 0, y: 0 });
       });
@@ -136,6 +161,7 @@ export default class Explore extends Component {
       toValue: { x: -SCREEN_WIDTH - 100, y: 0 },
       useNativeDriver: true,
     }).start(() => {
+      delete users[this.state.currentIndex];
       this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
         this.position.setValue({ x: 0, y: 0 });
       });
@@ -147,6 +173,7 @@ export default class Explore extends Component {
       toValue: { x: 0, y: -SCREEN_HEIGHT },
       useNativeDriver: true,
     }).start(() => {
+      delete users[this.state.currentIndex];
       this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
         this.position.setValue({ x: 0, y: 0 });
       });
@@ -163,36 +190,13 @@ export default class Explore extends Component {
             <Animated.View
               {...this.panResponder.panHandlers}
               key={key}
-              style={[
-                this.rotateAndTranslate,
-                {
-                  height: "100%",
-                  width: SCREEN_WIDTH,
-                  padding: 10,
-                  position: "absolute",
-                },
-              ]}
+              style={[this.rotateAndTranslate, styles.animatedUserContainer]}
             >
-              <View
-                style={{
-                  height: "18%",
-                  backgroundColor: "black",
-                  justifyContent: "flex-end",
-                  padding: 20,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "gray",
-                    fontSize: 30,
-                    fontWeight: "bold",
-                  }}
-                >
+              <View style={styles.userContainer}>
+                <Text style={styles.nameText}>
                   {user.name}, {user.age}
                 </Text>
-                <Text style={{ color: "gray", fontSize: 20 }}>
-                  {user.distance} km away
-                </Text>
+                <Text style={styles.distanceText}>{user.distance} km away</Text>
               </View>
               <Animated.View
                 style={{
@@ -204,19 +208,7 @@ export default class Explore extends Component {
                   zIndex: 1000,
                 }}
               >
-                <Text
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "green",
-                    color: "green",
-                    fontSize: 32,
-                    fontWeight: "800",
-                    padding: 10,
-                    borderRadius: 10,
-                  }}
-                >
-                  1 Night
-                </Text>
+                <Text style={styles.yesText}>1 Night</Text>
               </Animated.View>
               <Animated.View
                 style={{
@@ -228,38 +220,21 @@ export default class Explore extends Component {
                   zIndex: 1000,
                 }}
               >
-                <Text
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "red",
-                    color: "red",
-                    fontSize: 32,
-                    fontWeight: "800",
-                    padding: 10,
-                    borderRadius: 10,
-                  }}
-                >
-                  No Night
-                </Text>
+                <Text style={styles.nopeText}>No Night</Text>
               </Animated.View>
-              <Image
+              <Animated.View
                 style={{
-                  flex: 1,
-                  height: null,
-                  width: null,
-                  resizeMode: "cover",
-                  borderRadius: 20,
-                }}
-                source={user.image}
-              />
-              <View
-                style={{
-                  height: "7%",
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  alignItems: "center",
+                  opacity: this.superlikeOpacity,
+                  position: "absolute",
+                  top: "80%",
+                  left: "25%",
+                  zIndex: 1000,
                 }}
               >
+                <Text style={styles.superlikeText}>More Nights</Text>
+              </Animated.View>
+              <Image style={styles.image} source={user.image} />
+              <View style={styles.iconList}>
                 <Ionicons
                   name="heart-dislike"
                   size={32}
@@ -285,57 +260,44 @@ export default class Explore extends Component {
           return (
             <Animated.View
               key={key}
-              style={{
-                opacity: this.nextCardOpacity,
-                transform: [{ scale: this.nextCardScale }],
-                height: "100%",
-                width: SCREEN_WIDTH,
-                padding: 10,
-                position: "absolute",
-              }}
+              style={
+                ({
+                  opacity: this.nextCardOpacity,
+                  transform: [
+                    {
+                      scale: this.nextCardScale,
+                    },
+                  ],
+                },
+                styles.animatedUserContainer)
+              }
             >
-              <View
-                style={{
-                  height: "18%",
-                  backgroundColor: "black",
-                  justifyContent: "flex-end",
-                  padding: 20,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "gray",
-                    fontSize: 30,
-                    fontWeight: "bold",
-                  }}
-                >
+              <View style={styles.userContainer}>
+                <Text style={styles.nameText}>
                   {user.name}, {user.age}
                 </Text>
-                <Text style={{ color: "gray", fontSize: 20 }}>
-                  {user.distance} km away
-                </Text>
+                <Text style={styles.distanceText}>{user.distance} km away</Text>
               </View>
-              <Image
-                style={{
-                  flex: 1,
-                  height: null,
-                  width: null,
-                  resizeMode: "cover",
-                  borderRadius: 20,
-                }}
-                source={user.image}
-              />
-              <View
-                style={{
-                  height: "7%",
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  alignItems: "center",
-                }}
-              >
-                <Ionicons name="heart-dislike" size={32} color="red" />
-                <FontAwesome5 name="grin-hearts" size={32} color="#ff0048" />
-                <Ionicons name="heart" size={32} color="green" />
+              <Image style={styles.image} source={user.image} />
+              <View style={styles.iconList}>
+                <Ionicons
+                  name="heart-dislike"
+                  size={32}
+                  color="red"
+                  onPress={() => this.swipeCardNo()}
+                />
+                <FontAwesome5
+                  name="grin-hearts"
+                  size={32}
+                  color="#ff0048"
+                  onPress={() => this.swipeCardSuperlike()}
+                />
+                <Ionicons
+                  name="heart"
+                  size={32}
+                  color="green"
+                  onPress={() => this.swipeCardYes()}
+                />
               </View>
             </Animated.View>
           );
@@ -343,10 +305,32 @@ export default class Explore extends Component {
       })
       .reverse();
   };
+
+  fadeIn = () => {
+    Animated.timing(this.state.fadeAnimation, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+    return 1;
+  };
+
   render() {
     return (
       <View style={styles.container}>
         <View style={{ flex: 1 }}>{this.renderUsers()}</View>
+        {users[users.length - 1] == null
+          ? this.fadeIn() && (
+              <View style={styles.container}>
+                <Animated.View style={{ opacity: this.state.fadeAnimation }}>
+                  <Text style={styles.text}>
+                    Out of cards for today. Only 30 cards are allowed daily.
+                    Come back tomorrow.
+                  </Text>
+                </Animated.View>
+              </View>
+            )
+          : null}
       </View>
     );
   }
@@ -356,5 +340,68 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
+  },
+  text: {
+    color: "gray",
+    fontSize: 30,
+    textAlign: "center",
+  },
+  iconList: {
+    height: "7%",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+  },
+  image: {
+    flex: 1,
+    height: null,
+    width: null,
+    resizeMode: "cover",
+    borderRadius: 20,
+  },
+  nameText: {
+    color: "gray",
+    fontSize: 30,
+    fontWeight: "bold",
+  },
+  distanceText: { color: "gray", fontSize: 20 },
+  userContainer: {
+    height: "18%",
+    backgroundColor: "black",
+    justifyContent: "flex-end",
+    padding: 20,
+  },
+  animatedUserContainer: {
+    height: "100%",
+    width: SCREEN_WIDTH,
+    padding: 10,
+    position: "absolute",
+  },
+  superlikeText: {
+    borderWidth: 1,
+    borderColor: "#ff0048",
+    color: "#ff0048",
+    fontSize: 32,
+    fontWeight: "800",
+    padding: 10,
+    borderRadius: 10,
+  },
+  nopeText: {
+    borderWidth: 1,
+    borderColor: "red",
+    color: "red",
+    fontSize: 32,
+    fontWeight: "800",
+    padding: 10,
+    borderRadius: 10,
+  },
+  yesText: {
+    borderWidth: 1,
+    borderColor: "green",
+    color: "green",
+    fontSize: 32,
+    fontWeight: "800",
+    padding: 10,
+    borderRadius: 10,
   },
 });
