@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
-import { FlatList, View, StyleSheet, ScrollView } from "react-native";
-import { Divider, List } from "react-native-paper";
+import { FlatList, View, StyleSheet, Modal, Alert } from "react-native";
+import { List } from "react-native-paper";
 import { SearchBar } from "react-native-elements";
 import { Image } from "react-native";
 
@@ -43,67 +43,79 @@ const users = [
   },
 ];
 
-export default function Chat() {
+export default function Chat({ navigation }) {
   const [threads, setThreads] = useState(users);
   const [search, setSearch] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
   return (
-    <View style={{ flex: 1, backgroundColor: "black" }}>
-      <View style={{ flex: 0.2, justifyContent: "flex-end" }}>
-        <SearchBar
-          placeholder="Type here..."
-          onChangeText={(text) => setSearch(text)}
-          value={search}
-          containerStyle={{
-            backgroundColor: "black",
+    <FlatList
+      ListHeaderComponent={
+        <View style={{ flex: 0.1 }}>
+          <SearchBar
+            placeholder="Type here..."
+            onChangeText={(text) => setSearch(text)}
+            value={search}
+            containerStyle={{
+              backgroundColor: "black",
+            }}
+            inputContainerStyle={{ backgroundColor: "#cfcfcf" }}
+            inputStyle={{ color: "black" }}
+          />
+          <Modal
+            animationType="slide"
+            visible={false}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+              setModalVisible(!modalVisible);
+            }}
+          ></Modal>
+        </View>
+      }
+      data={threads}
+      keyExtractor={(item) => item.key.toString()}
+      ItemSeparatorComponent={() => (
+        <View
+          style={{
+            width: "85%",
+            backgroundColor: "gray",
+            height: 0.5,
+            alignSelf: "flex-end",
           }}
-          inputContainerStyle={{ backgroundColor: "#cfcfcf" }}
-          inputStyle={{ color: "black" }}
-        />
-      </View>
-      <ScrollView style={styles.container}>
-        <FlatList
-          data={threads}
-          keyExtractor={(item) => item.key}
-          ItemSeparatorComponent={() => (
-            <View
-              style={{
-                width: "85%",
-                backgroundColor: "gray",
-                height: 0.5,
-                alignSelf: "flex-end",
-              }}
-            ></View>
-          )}
-          renderItem={({ item }) => (
-            <TouchableOpacity>
-              <List.Item
-                title={item.name}
-                description={"Say hi to " + item.name}
-                titleNumberOfLines={1}
-                titleStyle={styles.listTitle}
-                descriptionStyle={styles.listDescription}
-                descriptionNumberOfLines={1}
-                left={() => (
-                  <TouchableOpacity style={styles.profilePhoto}>
-                    <Image
-                      source={item.image}
-                      resizeMode="cover"
-                      style={{ flex: 1, width: "100%" }}
-                    />
-                  </TouchableOpacity>
-                )}
-              />
-            </TouchableOpacity>
-          )}
-        />
-      </ScrollView>
-    </View>
+        ></View>
+      )}
+      renderItem={({ item }) => (
+        <TouchableOpacity onPress={() => navigation.navigate("Room")}>
+          <List.Item
+            title={item.name}
+            description={"Say hi to " + item.name}
+            titleNumberOfLines={1}
+            titleStyle={styles.listTitle}
+            descriptionStyle={styles.listDescription}
+            descriptionNumberOfLines={1}
+            left={() => (
+              <TouchableOpacity
+                style={styles.profilePhoto}
+                onPress={() => setModalVisible(true)}
+              >
+                <Image
+                  source={item.image}
+                  resizeMode="cover"
+                  style={{ flex: 1, width: "100%" }}
+                />
+              </TouchableOpacity>
+            )}
+          />
+        </TouchableOpacity>
+      )}
+      style={styles.container}
+    />
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.8,
+    flex: 1,
+    backgroundColor: "black",
   },
   listTitle: {
     fontSize: 22,

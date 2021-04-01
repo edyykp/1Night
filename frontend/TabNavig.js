@@ -7,7 +7,7 @@ import Svg, { Path } from "react-native-svg";
 import Explore from "./screens/Explore";
 import Profile from "./screens/Profile";
 import Likes from "./screens/Likes";
-import Chat from "./screens/Chat";
+import ChatNavig from "./ChatNavig";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -34,7 +34,7 @@ export default function App() {
       >
         <Tab.Screen
           name="Chat"
-          component={Chat}
+          component={ChatNavig}
           options={{
             tabBarIcon: (props) => (
               <Icon
