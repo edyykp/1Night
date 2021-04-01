@@ -5,20 +5,216 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from "react-native";
 import Slider from "react-native-smooth-slider";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
+import * as ImagePicker from "expo-image-picker";
+import * as Permissions from "expo-permissions";
 
-export default function Likes() {
+export default function Profile() {
   const [range, setRange] = useState(0);
   const [image1, setImage1] = useState(null);
   const [image2, setImage2] = useState(null);
   const [image3, setImage3] = useState(null);
 
+  const pickPhoto1 = async () => {
+    const { granted } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+    if (granted) {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        base64: false,
+      });
+      console.log(result);
+      if (!result.cancelled) {
+        setImage1(result.uri);
+      }
+    } else {
+      Alert.alert("Permission denied");
+    }
+  };
+
+  const pickPhoto2 = async () => {
+    const { granted } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+    if (granted) {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        base64: false,
+      });
+      console.log(result);
+      if (!result.cancelled) {
+        setImage2(result.uri);
+      }
+    } else {
+      Alert.alert("Permission denied");
+    }
+  };
+
+  const pickPhoto3 = async () => {
+    const { granted } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+    if (granted) {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        base64: false,
+      });
+      console.log(result);
+      if (!result.cancelled) {
+        setImage3(result.uri);
+      }
+    } else {
+      Alert.alert("Permission denied");
+    }
+  };
+
+  const removeImage1 = () => {
+    setImage1(image2);
+    setImage2(image3);
+    setImage3(null);
+  };
+  const removeImage2 = () => {
+    setImage2(image3);
+    setImage3(null);
+  };
+  const removeImage3 = () => {
+    setImage3(null);
+  };
   return (
     <View style={{ backgroundColor: "black", flex: 1 }}>
       <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.photosContainer}>
+          <View style={styles.titlePhoto}>
+            <Text style={styles.generalText}>Your photos</Text>
+          </View>
+          <View style={styles.photos}>
+            {image1 == null ? (
+              <TouchableOpacity
+                style={styles.pickPhoto}
+                onPress={() => pickPhoto1()}
+              >
+                <Icon name="plus" color="#ababab" size={30} />
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.pickPhoto}>
+                <Image
+                  source={{ uri: image1 }}
+                  style={{
+                    width: "100%",
+                    flex: 1,
+                  }}
+                  resizeMode="cover"
+                />
+                <TouchableOpacity
+                  style={{
+                    position: "absolute",
+                    top: 5,
+                    left: 5,
+                    borderRadius: 5,
+                    overflow: "hidden",
+                  }}
+                  onPress={() => removeImage1()}
+                >
+                  <Icon
+                    name="trash"
+                    size={30}
+                    color="black"
+                    style={{
+                      width: 25,
+                      height: 35,
+                      backgroundColor: "gray",
+                      opacity: 0.8,
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+            {image2 == null ? (
+              <TouchableOpacity
+                style={styles.pickPhoto}
+                onPress={() => pickPhoto2()}
+              >
+                <Icon name="plus" color="#ababab" size={30} />
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.pickPhoto}>
+                <Image
+                  source={{ uri: image2 }}
+                  style={{
+                    width: "100%",
+                    flex: 1,
+                  }}
+                  resizeMode="cover"
+                />
+                <TouchableOpacity
+                  style={{
+                    position: "absolute",
+                    top: 5,
+                    left: 5,
+                    borderRadius: 5,
+                    overflow: "hidden",
+                  }}
+                  onPress={() => removeImage2()}
+                >
+                  <Icon
+                    name="trash"
+                    size={30}
+                    color="black"
+                    style={{
+                      width: 25,
+                      height: 35,
+                      backgroundColor: "gray",
+                      opacity: 0.8,
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+            {image3 == null ? (
+              <TouchableOpacity
+                style={styles.pickPhoto}
+                onPress={() => pickPhoto3()}
+              >
+                <Icon name="plus" color="#ababab" size={30} />
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.pickPhoto}>
+                <Image
+                  source={{ uri: image3 }}
+                  style={{
+                    width: "100%",
+                    flex: 1,
+                  }}
+                  resizeMode="cover"
+                />
+                <TouchableOpacity
+                  style={{
+                    position: "absolute",
+                    top: 5,
+                    left: 5,
+                    borderRadius: 5,
+                    overflow: "hidden",
+                  }}
+                  onPress={() => removeImage3()}
+                >
+                  <Icon
+                    name="trash"
+                    size={30}
+                    color="black"
+                    style={{
+                      width: 25,
+                      height: 35,
+                      backgroundColor: "gray",
+                      opacity: 0.8,
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        </View>
         <View style={styles.ratingsContainer}>
           <View style={styles.likesContainer}>
             <Text style={styles.likes}>250</Text>
@@ -63,124 +259,7 @@ export default function Likes() {
             onSlidingComplete={() => console.log("distance changed")}
           />
         </View>
-        <View style={styles.photosContainer}>
-          <View style={styles.titlePhoto}>
-            <Text style={styles.generalText}>Your photos</Text>
-          </View>
-          <View style={styles.photos}>
-            {image1 == null ? (
-              <TouchableOpacity
-                style={styles.pickPhoto}
-                onPress={() => pickPhoto()}
-              >
-                <Icon name="plus" color="#ababab" size={30} />
-              </TouchableOpacity>
-            ) : (
-              <>
-                <Image
-                  source={{ uri: image1 }}
-                  style={{
-                    width: "100%",
-                    flex: 1,
-                  }}
-                  resizeMode="cover"
-                />
-                <TouchableOpacity
-                  onPress={() => setImage(null)}
-                  style={{ backgroundColor: "grey" }}
-                >
-                  <Icon
-                    name="trash"
-                    size={30}
-                    color="lightgrey"
-                    style={{
-                      width: 50,
-                      height: 50,
-                      position: "absolute",
-                      marginTop: -40,
-                      marginLeft: 5,
-                      opacity: 0.5,
-                    }}
-                  />
-                </TouchableOpacity>
-              </>
-            )}
-            {image2 == null ? (
-              <TouchableOpacity
-                style={styles.pickPhoto}
-                onPress={() => pickPhoto()}
-              >
-                <Icon name="plus" color="#ababab" size={30} />
-              </TouchableOpacity>
-            ) : (
-              <>
-                <Image
-                  source={{ uri: image2 }}
-                  style={{
-                    width: "100%",
-                    flex: 1,
-                  }}
-                  resizeMode="cover"
-                />
-                <TouchableOpacity
-                  onPress={() => setImage(null)}
-                  style={{ backgroundColor: "grey" }}
-                >
-                  <Icon
-                    name="trash"
-                    size={30}
-                    color="lightgrey"
-                    style={{
-                      width: 50,
-                      height: 50,
-                      position: "absolute",
-                      marginTop: -40,
-                      marginLeft: 5,
-                      opacity: 0.5,
-                    }}
-                  />
-                </TouchableOpacity>
-              </>
-            )}
-            {image3 == null ? (
-              <TouchableOpacity
-                style={styles.pickPhoto}
-                onPress={() => pickPhoto()}
-              >
-                <Icon name="plus" color="#ababab" size={30} />
-              </TouchableOpacity>
-            ) : (
-              <>
-                <Image
-                  source={{ uri: image3 }}
-                  style={{
-                    width: "100%",
-                    flex: 1,
-                  }}
-                  resizeMode="cover"
-                />
-                <TouchableOpacity
-                  onPress={() => setImage(null)}
-                  style={{ backgroundColor: "grey" }}
-                >
-                  <Icon
-                    name="trash"
-                    size={30}
-                    color="lightgrey"
-                    style={{
-                      width: 50,
-                      height: 50,
-                      position: "absolute",
-                      marginTop: -40,
-                      marginLeft: 5,
-                      opacity: 0.5,
-                    }}
-                  />
-                </TouchableOpacity>
-              </>
-            )}
-          </View>
-        </View>
+
         <View style={styles.getPremiumContainer}>
           <Text
             style={{

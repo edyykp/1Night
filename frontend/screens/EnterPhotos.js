@@ -14,7 +14,6 @@ import * as Permissions from "expo-permissions";
 
 export default function EnterPhotos({ navigation }) {
   const [image, setImage] = useState(null);
-  const [opacity, setOpacity] = useState(1);
 
   const pickPhoto = async () => {
     const { granted } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
@@ -27,7 +26,6 @@ export default function EnterPhotos({ navigation }) {
       console.log(result);
       if (!result.cancelled) {
         setImage(result.uri);
-        setOpacity(0);
       }
     } else {
       Alert.alert("Permission denied");
