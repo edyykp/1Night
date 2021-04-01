@@ -108,31 +108,31 @@ export default class Explore extends Component {
             toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
             useNativeDriver: true,
           }).start(() => {
-            delete users[this.state.currentIndex];
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
               this.position.setValue({ x: 0, y: 0 });
             });
           });
+          delete users[this.state.currentIndex];
         } else if (gestureState.dx < -120) {
           Animated.spring(this.position, {
             toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
             useNativeDriver: true,
           }).start(() => {
-            delete users[this.state.currentIndex];
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
               this.position.setValue({ x: 0, y: 0 });
             });
           });
+          delete users[this.state.currentIndex];
         } else if (gestureState.dy < -100) {
           Animated.spring(this.position, {
             toValue: { x: gestureState.dx, y: -SCREEN_HEIGHT },
             useNativeDriver: true,
           }).start(() => {
-            delete users[this.state.currentIndex];
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
               this.position.setValue({ x: 0, y: 0 });
             });
           });
+          delete users[this.state.currentIndex];
         } else {
           Animated.spring(this.position, {
             toValue: { x: 0, y: 0 },
