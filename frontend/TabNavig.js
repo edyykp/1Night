@@ -1,7 +1,10 @@
 import React from "react";
 import { Text, Dimensions, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import {
+  getFocusedRouteNameFromRoute,
+  NavigationContainer,
+} from "@react-navigation/native";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import Svg, { Path } from "react-native-svg";
 import Explore from "./screens/Explore";
@@ -9,28 +12,36 @@ import Profile from "./screens/Profile";
 import Likes from "./screens/Likes";
 import ChatNavig from "./ChatNavig";
 
-const Tab = createMaterialBottomTabNavigator();
+const Tab = createMaterialTopTabNavigator();
 
 const windowWidth = Dimensions.get("screen").width;
 const windowHeight = Dimensions.get("screen").height;
 
-export default function App() {
+export default function App({ route }) {
   return (
     <NavigationContainer independent={true}>
-      {/* //coments, globe-americas, grin-hearts, heart-broken, heart, thumbs-up,
-        //thumbs-down, user. */}
       <Tab.Navigator
         initialRouteName="Explore"
         screenOptions={{
           headerShown: false,
         }}
-        barStyle={{
-          backgroundColor: "black",
-          borderColor: "gray",
-          borderTopWidth: 1,
-          borderTopColor: "grey",
+        tabBarPosition="bottom"
+        tabBarOptions={{
+          activeTintColor: "#ff0048",
+          inactiveTintColor: "gray",
+          showIcon: true,
+          showLabel: true,
+          tabStyle: {
+            backgroundColor: "black",
+            borderColor: "gray",
+            borderTopWidth: 1,
+          },
+          labelStyle: {
+            fontSize: 10,
+          },
+          indicatorStyle: { color: "#ff0048" },
+          pressOpacity: 1,
         }}
-        activeColor="#ff0048"
       >
         <Tab.Screen
           name="Chat"

@@ -8,7 +8,7 @@ const Stack = createStackNavigator();
 export default class ChatNavig extends Component {
   render() {
     return (
-      <NavigationContainer independent={true}>
+      <NavigationContainer independent={true} initialRouteName="Chat">
         <Stack.Navigator
           initialRouteName="Chat"
           screenOptions={{
@@ -31,8 +31,8 @@ export default class ChatNavig extends Component {
           <Stack.Screen
             name="Room"
             component={Room}
-            options={({ route }) => ({
-              title: route.params.thread.name,
+            options={() => ({
+              headerShown: false,
             })}
           />
         </Stack.Navigator>

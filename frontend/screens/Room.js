@@ -1,10 +1,28 @@
+import { useNavigation } from "@react-navigation/core";
 import React, { useState } from "react";
-import { StyleSheet, View, ActivityIndicator } from "react-native";
-import { ForceTouchGestureHandler } from "react-native-gesture-handler";
-import { GiftedChat, Bubble, Send } from "react-native-gifted-chat";
+import {
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  Modal,
+  Text,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import {
+  GiftedChat,
+  Bubble,
+  Send,
+  InputToolbar,
+} from "react-native-gifted-chat";
+import { Entypo } from "@expo/vector-icons";
 import { IconButton } from "react-native-paper";
 
 export default function Room(thread) {
+  const [modalVisible, setModalVisible] = useState(true);
+  const navigation = useNavigation();
+  const friendName = thread.route.params.thread.name;
+  const friendImage = thread.route.params.thread.image;
   const [messages, setMessages] = useState([
     /**
      * Mock message data
@@ -24,6 +42,7 @@ export default function Room(thread) {
       user: {
         _id: 2,
         name: "Test User",
+        avatar: friendImage,
       },
     },
   ]);
@@ -51,6 +70,12 @@ export default function Room(thread) {
     );
   }
 
+  function renderInputToolbar(props) {
+    return (
+      <InputToolbar {...props} containerStyle={{ backgroundColor: "black" }} />
+    );
+  }
+
   function scrollToBottomComponent() {
     return (
       <View style={styles.bottomComponentContainer}>
@@ -69,36 +94,88 @@ export default function Room(thread) {
             backgroundColor: "#ff0048",
           },
           left: {
-            backgroundColor: "white",
+            backgroundColor: "gray",
           },
         }}
         textStyle={{
           right: {
             color: "#fff",
           },
+          left: {
+            color: "#fff",
+          },
         }}
       />
     );
   }
+
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={(newMessage) => handleSend(newMessage)}
-      user={{ _id: 1, name: "Edi Edif", avatar: thread.image }}
-      renderBubble={renderBubble}
-      renderSend={renderSend}
-      scrollToBottomComponent={scrollToBottomComponent}
-      renderLoading={renderLoading}
-      showUserAvatar
-      alwaysShowSend
-      scrollToBottom
-      isTyping
-      loadEarlier
-    />
+    <View style={{ backgroundColor: "black", flex: 1 }}>
+      <Modal
+        transparent
+        animationType="slide"
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+          navigation.goBack();
+        }}
+      >
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(false);
+                navigation.goBack();
+              }}
+            >
+              <Entypo name="chevron-left" color="#ff0048" size={40} />
+            </TouchableOpacity>
+            <View style={styles.profilePhoto}>
+              <Image
+                source={friendImage}
+                resizeMode="cover"
+                style={{ flex: 1, width: "100%" }}
+              />
+            </View>
+            <Text style={styles.friendName}>{friendName}</Text>
+          </View>
+
+          <GiftedChat
+            messages={messages}
+            onSend={(newMessage) => handleSend(newMessage)}
+            user={{ _id: 1, name: "Edi Edif", avatar: friendImage }}
+            renderBubble={renderBubble}
+            renderSend={renderSend}
+            scrollToBottomComponent={scrollToBottomComponent}
+            renderLoading={renderLoading}
+            renderInputToolbar={renderInputToolbar}
+            textInputStyle={{ color: "white" }}
+            showUserAvatar
+            alwaysShowSend
+            scrollToBottom
+            isTyping
+            loadEarlier
+          />
+        </View>
+      </Modal>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "black",
+    justifyContent: "flex-end",
+  },
+  header: {
+    flex: 0.12,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    borderBottomWidth: 0.5,
+    borderBottomColor: "gray",
+    paddingBottom: 10,
+  },
   sendingContainer: {
     justifyContent: "center",
     alignItems: "center",
@@ -106,5 +183,19 @@ const styles = StyleSheet.create({
   bottomComponentContainer: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  friendName: {
+    color: "#ff0048",
+    fontSize: 28,
+    textAlign: "center",
+    marginLeft: 20,
+  },
+  profilePhoto: {
+    width: 35,
+    height: 35,
+    borderRadius: 50,
+    overflow: "hidden",
+    alignItems: "center",
+    marginLeft: 10,
   },
 });

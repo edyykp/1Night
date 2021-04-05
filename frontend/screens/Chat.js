@@ -70,7 +70,9 @@ export default function Chat({ navigation }) {
           transparent
         >
           <TouchableOpacity
-            onPressOut={() => setModalVisible(false)}
+            onPressOut={() => {
+              setModalVisible(false);
+            }}
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
             activeOpacity={1}
           >
@@ -191,7 +193,7 @@ const styles = StyleSheet.create({
   },
   listTitle: {
     fontSize: 22,
-    color: "gray",
+    color: "#ff0048",
     fontWeight: "bold",
   },
   listDescription: {
