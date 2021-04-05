@@ -28,7 +28,13 @@ export default class ChatNavig extends Component {
           }}
         >
           <Stack.Screen name="Chat" component={Chat} />
-          <Stack.Screen name="Room" component={Room} />
+          <Stack.Screen
+            name="Room"
+            component={Room}
+            options={({ route }) => ({
+              title: route.params.thread.name,
+            })}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     );

@@ -1,9 +1,16 @@
 import React, { useState } from "react";
-import { TouchableOpacity } from "react-native";
-import { FlatList, View, StyleSheet, Modal, Alert } from "react-native";
+import {
+  FlatList,
+  View,
+  StyleSheet,
+  Modal,
+  Text,
+  Image,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { List } from "react-native-paper";
 import { SearchBar } from "react-native-elements";
-import { Image } from "react-native";
 
 const users = [
   {
@@ -47,29 +54,89 @@ export default function Chat({ navigation }) {
   const [threads, setThreads] = useState(users);
   const [search, setSearch] = useState();
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const ProfileModal = () => {
+    if (selectedUser == null) {
+      return null;
+    } else
+      return (
+        <Modal
+          animationType="fade"
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+          transparent
+        >
+          <TouchableOpacity
+            onPressOut={() => setModalVisible(false)}
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+            activeOpacity={1}
+          >
+            <TouchableWithoutFeedback>
+              <View style={styles.modalContainer}>
+                <View
+                  style={{
+                    flex: 0.85,
+                    width: "100%",
+                    borderColor: "#ff0048",
+                    borderWidth: 2,
+                  }}
+                >
+                  <Image
+                    source={selectedUser.image}
+                    style={{
+                      flex: 1,
+                      width: "100%",
+                    }}
+                    resizeMode="cover"
+                  />
+                </View>
+                <View
+                  style={{
+                    flex: 0.15,
+                    justifyContent: "center",
+                    alignSelf: "flex-start",
+                    marginLeft: 10,
+                  }}
+                >
+                  <Text style={styles.nameText}>
+                    {selectedUser.name}, {selectedUser.age}
+                  </Text>
+                  <Text style={styles.distanceText}>
+                    {selectedUser.distance} km away
+                  </Text>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </TouchableOpacity>
+        </Modal>
+      );
+  };
+
   return (
     <FlatList
       ListHeaderComponent={
-        <View style={{ flex: 0.1 }}>
-          <SearchBar
-            placeholder="Type here..."
-            onChangeText={(text) => setSearch(text)}
-            value={search}
-            containerStyle={{
-              backgroundColor: "black",
-            }}
-            inputContainerStyle={{ backgroundColor: "#cfcfcf" }}
-            inputStyle={{ color: "black" }}
-          />
-          <Modal
-            animationType="slide"
-            visible={false}
-            onRequestClose={() => {
-              Alert.alert("Modal has been closed.");
-              setModalVisible(!modalVisible);
-            }}
-          ></Modal>
-        </View>
+        <>
+          <View style={{ flex: 0.1 }}>
+            <SearchBar
+              placeholder="Type here..."
+              onChangeText={(text) => setSearch(text)}
+              value={search}
+              containerStyle={{
+                backgroundColor: "black",
+              }}
+              inputContainerStyle={{
+                backgroundColor: "#cfcfcf",
+                borderRadius: 50,
+                height: 40,
+              }}
+              inputStyle={{ color: "black" }}
+            />
+          </View>
+          <ProfileModal />
+        </>
       }
       data={threads}
       keyExtractor={(item) => item.key.toString()}
@@ -84,10 +151,12 @@ export default function Chat({ navigation }) {
         ></View>
       )}
       renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => navigation.navigate("Room")}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Room", { thread: item })}
+        >
           <List.Item
             title={item.name}
-            description={"Say hi to " + item.name}
+            description={"Say hi to " + item.name + "👋"}
             titleNumberOfLines={1}
             titleStyle={styles.listTitle}
             descriptionStyle={styles.listDescription}
@@ -95,7 +164,10 @@ export default function Chat({ navigation }) {
             left={() => (
               <TouchableOpacity
                 style={styles.profilePhoto}
-                onPress={() => setModalVisible(true)}
+                onPress={() => {
+                  setModalVisible(true);
+                  setSelectedUser(item);
+                }}
               >
                 <Image
                   source={item.image}
@@ -134,4 +206,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     top: 5,
   },
+  modalContainer: {
+    flex: 0.75,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "95%",
+    backgroundColor: "#ff0048",
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowOpacity: 0.58,
+    shadowRadius: 16.0,
+
+    elevation: 24,
+  },
+  nameText: {
+    color: "white",
+    fontSize: 30,
+    fontWeight: "bold",
+  },
+  distanceText: { color: "white", fontSize: 20 },
 });
